@@ -5,8 +5,8 @@ on: [push,pull_request]
 jobs: 
   job1: 
     environment:
-      name: testing
-    env: 
+      name: testing  # name that we define in github
+    env: #env for envionment variable
       DATABASE_HOSTNAME: ${{secrets.DATABASE_HOSTNAME}}
       DATABASE_PORT: ${{secrets.DATABASE_PORT}}
       DATABASE_USERNAME: ${{secrets.DATABASE_USERNAME}}
@@ -20,7 +20,7 @@ jobs:
     services:     #postgres set-up
       postgres:
         image: postgres
-        env: 
+        env:  #env for database 
           POSTGRES_PASSWORD: ${{secrets.DATABASE_PASSWORD}}
           POSTGRES_DB: ${{secrets.DATABASE_NAME}}_test
         ports:
@@ -50,4 +50,31 @@ jobs:
           pip install pytest
           pytest
 
+      # Docker 
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{secrets.DOCKER_HUB_USERNAME}} #gnerated from docker personal access token
+          password: ${{secrets.DOCKER_HUB_ACCESS_TOKEN}} #generated from docker personal access token
 
+      # Copy from docker-github Docs
+      - name : Set up Docker Buildx
+        id : buildx
+        users : dicker/setup-buildx-action@v1 
+
+
+      - name : Build and push
+        id : docker_build
+        uses : docker/build-push-action@v2
+        with:
+          context: ./
+          file: ./Dockerfile
+          builder: ${{steps.buildx.outputs.name}}
+          push: true
+          tags : ${{secrets.DOCKER_HUB_USERNAME}}/myfastapi:latest
+          cache-form: type=local,dest=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache
+      - name : Image digest
+        run : echo ${{steps.docker_build.outputs.digest}}
+
+ 
