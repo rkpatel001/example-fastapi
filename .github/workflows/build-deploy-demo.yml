@@ -4,15 +4,18 @@ on: [push,pull_request]
   
 jobs: 
   job1: 
+    environment:
+      name: testing
     env: 
-      DATABASE_HOSTNAME: localhost
-      DATABASE_PORT: 5432
-      DATABASE_USERNAME: postgres
-      DATABASE_PASSWORD: admin
-      DATABASE_NAME: fastapi
-      SECRET_KEY: 5b9876f11bc4d834aab2d93b440f9e7cf6f5795109d739f99bb9ebfefc7de303
-      ALGORITHM: HS256
-      ACCESS_TOKEN_EXPIRE_MINUTES: 30
+      DATABASE_HOSTNAME: {{secrets.DATABASE_HOSTNAME}}
+      DATABASE_PORT: {{secrets.DATABASE_PORT}}
+      DATABASE_USERNAME: {{secrets.DATABASE_USERNAME}}
+      DATABASE_PASSWORD: {{secrets.DATABASE_PASSWORD}}
+      DATABASE_NAME: {{secrets.DATABASE_NAME}}
+      SECRET_KEY: {{secrets.SECRET_KEY}}
+      ALGORITHM: {{secrets.ALGORITHM}}
+      ACCESS_TOKEN_EXPIRE_MINUTES: {{secrets.ACCESS_TOKEN_EXPIRE_MINUTES
+      }}
 
 
 
