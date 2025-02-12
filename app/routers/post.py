@@ -55,15 +55,16 @@ def create_posts(post:schema.PostCreate, db:Session = Depends(get_db), current_u
 # get data with id--------------------------------------------
 @router.get("/{id}" , response_model=schema.PostOut)
 def get_post(id : int, db:Session = Depends(get_db) , current_user : schema.UserOut = Depends(oauth2.get_current_user)):
-
     # cursor.execute("""SELECT * FROM posts WHERE id = %s""",(str(id)))
     # post = cursor.fetchone()
     print(f"Getting post data {current_user.id}",)
 
     post = db.query(models.Post).filter(models.Post.id == id).first()
 
+    print(post)
 
-    result= db.query(models.Post, func.count(models.Vote.post_id).label("votes")).outerjoin(models.Vote, models.Post.id == models.Vote.post_id).group_by(models.Post.id).all()
+
+    result= db.query(models.Post, func.count(models.Vote.post_id).label("votes")).outerjoin(models.Vote, models.Post.id == models.Vote.post_id).group_by(models.Post.id).first()
 
 
     if not result :
@@ -111,8 +112,6 @@ def update_post(id:int , updated_post:schema.PostCreate , db:Session = Depends(g
     # conn.commit()
 
    
-  
-
     post_query = db.query(models.Post).filter(models.Post.id == id)
 
     post = post_query.first()

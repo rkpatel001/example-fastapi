@@ -54,6 +54,10 @@ class PostOut(BaseModel):
     Post: Post
     votes: int
 
+    class Config:
+        from_attributes = True
+
+
 # vote
 
 class Vote(BaseModel):
