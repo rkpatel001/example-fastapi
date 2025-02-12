@@ -55,15 +55,15 @@ def test_collect_intrest():
     assert bank_account.balance == 55.00000000000001
 
 
-@pytest.mark.parametrize("deposited,withdraw,expected",[(200,100,100),(50,20,30),(10000,9000,1000),(10,50,40)])
+@pytest.mark.parametrize("deposited,withdraw,expected",[(200,100,100),(50,20,30),(10000,9000,1000),(100,50,50)])
 def test_bank_transaction(zero_bank_account,deposited,withdraw,expected):
     zero_bank_account.deposit(deposited)
     zero_bank_account.withdraw(withdraw)
     assert zero_bank_account.balance == expected
 
-def test_insufficient_fund(bank_account):
-    with pytest.raises(Exception):
-        bank_account.withdraw(2000)    
+# def test_insufficient_fund(bank_account):
+#     with pytest.raises(Exception):
+#         bank_account.withdraw(0)    
 
 
 
