@@ -3,7 +3,7 @@ name: Build and Deploy Code
 on: [push, pull_request]
 
 jobs:
-  job1:
+  build:
     environment:
       name: testing  # name defined in GitHub
     env: # Environment variables
@@ -53,28 +53,39 @@ jobs:
           pip install pytest
           pytest
 
-      # Docker Setup
-      - name: Login to Docker Hub
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKER_HUB_USERNAME }}  # Docker Hub username
-          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}  # Docker Hub access token
+      # # Docker Setup
+      # - name: Login to Docker Hub
+      #   uses: docker/login-action@v2
+      #   with:
+      #     username: ${{ secrets.DOCKER_HUB_USERNAME }}  # Docker Hub username
+      #     password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}  # Docker Hub access token
 
-      - name: Set up Docker Buildx
-        id: buildx
-        uses: docker/setup-buildx-action@v2
+      # - name: Set up Docker Buildx
+      #   id: buildx
+      #   uses: docker/setup-buildx-action@v2
 
-      - name: Build and Push Docker Image
-        id: docker_build
-        uses: docker/build-push-action@v5
-        with:
-          context: ./
-          file: ./Dockerfile
-          builder: ${{ steps.buildx.outputs.name }}
-          push: true
-          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/myfastapi:latest
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache
+      # - name: Build and Push Docker Image
+      #   id: docker_build
+      #   uses: docker/build-push-action@v5
+      #   with:
+      #     context: ./
+      #     file: ./Dockerfile
+      #     builder: ${{ steps.buildx.outputs.name }}
+      #     push: true
+      #     tags: ${{ secrets.DOCKER_HUB_USERNAME }}/myfastapi:latest
+      #     cache-from: type=local,src=/tmp/.buildx-cache
+      #     cache-to: type=local,dest=/tmp/.buildx-cache
 
-      - name: Image digest
-        run: echo ${{ steps.docker_build.outputs.digest }}
+      # - name: Image digest
+      #   run: echo ${{ steps.docker_build.outputs.digest }}
+
+
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: [build]
+
+    steps:
+      - name: deploying stuff
+        run: echo "going to deploy some stuff"
+
